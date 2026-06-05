@@ -9,4 +9,6 @@ public interface NMSServerGamePacketListener {
 
     String BUNGEE_CORD_CORRECTED_CHANNEL = StandardMessenger.validateAndCorrectChannel(BUNGEE_CORD_CHANNEL);
 
+    void setPing(int ping);
+
 }

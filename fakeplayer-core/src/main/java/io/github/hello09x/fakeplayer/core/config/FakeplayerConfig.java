@@ -174,6 +174,8 @@ public class FakeplayerConfig extends PluginConfig {
 
     private Map<Feature, String> defaultFeatures;
 
+    private List<Integer> customPing = List.of(0);
+
     @Inject
     public FakeplayerConfig() {
         super(Main.getInstance());
@@ -245,6 +247,8 @@ public class FakeplayerConfig extends PluginConfig {
             log.warning("destroy-commands is deprecated, use post-quit-commands instead.");
             this.postQuitCommands.addAll(destroyCommands);
         }
+
+        customPing = Arrays.stream(Objects.requireNonNull(file.getString("custom-ping")).split(",")).map(Integer::parseInt).toList();
 
     }
 

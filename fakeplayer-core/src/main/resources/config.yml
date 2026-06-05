@@ -293,6 +293,11 @@ default-features:
   autofish: false
   wolverine: false
 
+# Ping value for fake players
+# Can be set to a fixed value, or a range (e.g., 20,50) for a random value within that range.
+# 假人的ping值
+# 可以设置固定值 或者用20,50表示在20-50范围内的随机值
+custom-ping: -1
 
 # 检测更新
 # 仅仅是检测, 并不会帮你下载

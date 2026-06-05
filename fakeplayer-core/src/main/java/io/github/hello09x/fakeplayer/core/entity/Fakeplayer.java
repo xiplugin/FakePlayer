@@ -33,6 +33,7 @@ import java.net.InetAddress;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
@@ -166,6 +167,13 @@ public class Fakeplayer {
 
                     this.network = bridge.createNetwork(address);
                     this.network.placeNewPlayer(Bukkit.getServer(), this.player);
+
+                    if (!config.getCustomPing().isEmpty()) {
+                        int ping = (config.getCustomPing().size() == 1) ? config.getCustomPing().get(0)
+                                : ThreadLocalRandom.current().nextInt(config.getCustomPing().get(0), config.getCustomPing().get(1) + 1);
+                        this.network.getServerGamePacketListener().setPing(ping);
+                    }
+
                     this.player.setHealth(Optional.ofNullable(this.player.getAttribute(Attributes.maxHealth()))
                                                   .map(AttributeInstance::getValue)
                                                   .orElse(20D));    // 恢复生命值
@@ -175,6 +183,7 @@ public class Fakeplayer {
 
                     this.teleportToSpawnpoint(option.spawnAt().clone());
                     this.ticker.runTaskTimer(Main.getInstance(), 0, 1);
+
                 }));
     }
 

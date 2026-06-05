@@ -8,6 +8,8 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.DiscardedPayload;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.MinecraftServer;
@@ -16,9 +18,12 @@ import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -121,6 +126,27 @@ public class FakeServerGamePacketListenerImpl extends ServerGamePacketListenerIm
                 throw Lombok.sneakyThrow(e);
             }
         }
+    }
+
+    private int ping = 0;
+    private Plugin plugin;
+
+    @Override
+    public int latency() {
+        return ping;
+    }
+
+    @Override
+    public void setPing(int ping) {
+        if (plugin == null) {
+            plugin = Bukkit.getPluginManager().getPlugin("FakePlayer");
+        }
+        this.ping = ping;
+        serverBroadcast(new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY), List.of(player)));
+    }
+
+    private void serverBroadcast(Packet<ClientGamePacketListener> packet) {
+        Bukkit.getAsyncScheduler().runNow(plugin,task-> server.server.getOnlinePlayers().forEach(player-> player.getHandle().connection.send(packet)));
     }
 
 }
