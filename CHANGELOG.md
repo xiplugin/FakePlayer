@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/xiplugin/FakePlayer/compare/v1.2.0...v1.3.0) (2026-06-05)
+
+
+### Features
+
+* fakeplayer custom ping ([fdc3cd2](https://github.com/xiplugin/FakePlayer/commit/fdc3cd22e812f7e20aa95e938c16d96d423420bf))
+
 ## [1.2.0](https://github.com/coderxi1/minecraft-fakeplayer/compare/v1.1.3...v1.2.0) (2026-03-24)
 
 
