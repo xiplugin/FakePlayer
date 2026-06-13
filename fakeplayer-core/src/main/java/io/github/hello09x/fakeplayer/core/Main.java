@@ -15,6 +15,7 @@ import io.github.hello09x.fakeplayer.core.listener.FakeplayerLifecycleListener;
 import io.github.hello09x.fakeplayer.core.listener.FakeplayerListener;
 import io.github.hello09x.fakeplayer.core.listener.PlayerListener;
 import io.github.hello09x.fakeplayer.core.manager.FakeplayerAutofishManager;
+import io.github.hello09x.fakeplayer.core.manager.FakeplayerPingSetter;
 import io.github.hello09x.fakeplayer.core.manager.FakeplayerReplenishManager;
 import io.github.hello09x.fakeplayer.core.manager.WildFakeplayerManager;
 import io.github.hello09x.fakeplayer.core.manager.invsee.InvseeManager;
@@ -70,6 +71,10 @@ public final class Main extends JavaPlugin {
         }
 
         {
+            injector.getInstance(FakeplayerPingSetter.class).start();
+        }
+
+        {
             var placeholderExpansion = injector.getInstance(FakeplayerPlaceholderExpansion.class);
             if (placeholderExpansion != null) {
                 if (placeholderExpansion.register()) {
@@ -82,6 +87,7 @@ public final class Main extends JavaPlugin {
         if (injector.getInstance(FakeplayerConfig.class).isCheckForUpdates()) {
             checkForUpdatesAsync();
         }
+
         MessageUtils.init(Main.getInstance());
         getLogger().info("Enabled in %d ms".formatted(System.currentTimeMillis() - loadAt));
     }

@@ -137,12 +137,14 @@ public class FakeServerGamePacketListenerImpl extends ServerGamePacketListenerIm
     }
 
     @Override
-    public void setPing(int ping) {
+    public void setPing(int ping, boolean forceBroadcast) {
         if (plugin == null) {
             plugin = Bukkit.getPluginManager().getPlugin("FakePlayer");
         }
         this.ping = ping;
-        serverBroadcast(new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY), List.of(player)));
+        if (forceBroadcast) {
+            serverBroadcast(new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY), List.of(player)));
+        }
     }
 
     private void serverBroadcast(Packet<ClientGamePacketListener> packet) {

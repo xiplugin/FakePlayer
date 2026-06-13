@@ -298,6 +298,10 @@ default-features:
 # 假人的ping值
 # 可以设置固定值 或者用20,50表示在20-50范围内的随机值
 custom-ping: -1
+# 模仿真实ping浮动
+custom-ping-dynamic: true
+# 模仿真实ping浮动任务间隔
+custom-ping-dynamic-task-delay: 80 #tick
 
 # 检测更新
 # 仅仅是检测, 并不会帮你下载

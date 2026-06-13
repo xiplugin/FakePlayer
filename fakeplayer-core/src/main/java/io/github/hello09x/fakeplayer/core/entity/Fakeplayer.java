@@ -17,6 +17,7 @@ import io.github.hello09x.fakeplayer.core.manager.naming.SequenceName;
 import io.github.hello09x.fakeplayer.core.util.Attributes;
 import io.github.hello09x.fakeplayer.core.util.InternalAddressGenerator;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -84,6 +85,11 @@ public class Fakeplayer {
     @Getter
     @UnknownNullability
     private NMSNetwork network;
+
+    @Getter
+    @Setter
+    private volatile int firstPing = 0;
+    private int currentPing = 0;
 
     /**
      * @param creator      创建者
@@ -169,9 +175,10 @@ public class Fakeplayer {
                     this.network.placeNewPlayer(Bukkit.getServer(), this.player);
 
                     if (!config.getCustomPing().isEmpty()) {
-                        int ping = (config.getCustomPing().size() == 1) ? config.getCustomPing().get(0)
+                        firstPing = (config.getCustomPing().size() == 1) ? config.getCustomPing().get(0)
                                 : ThreadLocalRandom.current().nextInt(config.getCustomPing().get(0), config.getCustomPing().get(1) + 1);
-                        this.network.getServerGamePacketListener().setPing(ping);
+                        currentPing = firstPing;
+                        this.network.getServerGamePacketListener().setPing(currentPing, true);
                     }
 
                     this.player.setHealth(Optional.ofNullable(this.player.getAttribute(Attributes.maxHealth()))
@@ -185,6 +192,34 @@ public class Fakeplayer {
                     this.ticker.runTaskTimer(Main.getInstance(), 0, 1);
 
                 }));
+    }
+
+    public void updateDynamicPing() {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int chance = random.nextInt(100);
+        int change = 0;
+        if (chance < 5) { // 5% 概率触发 ±5~8 ms
+            change = random.nextInt(5, 9);
+        } else if (chance < 15) { // 10% 概率触发 ±3~4 ms
+            change = random.nextInt(3, 5);
+        } else if (chance < 75) { // 60% 概率触发 ±1~2 ms
+            change = random.nextInt(1, 3);
+        } // 剩下的 25% 保持不动 (change = 0)
+
+        if (change > 0) {
+            if (currentPing > firstPing) {
+                currentPing -= change;
+            } else if (currentPing < firstPing) {
+                currentPing += change;
+            } else {
+                currentPing += random.nextBoolean() ? change : -change;
+            }
+            // 边界控制，差距不超过 8
+            if (currentPing > firstPing + 8) currentPing = firstPing + 8;
+            if (currentPing < firstPing - 8) currentPing = firstPing - 8;
+            if (currentPing < 0) currentPing = 0;
+        }
+        this.network.getServerGamePacketListener().setPing(currentPing,false);
     }
 
     /**

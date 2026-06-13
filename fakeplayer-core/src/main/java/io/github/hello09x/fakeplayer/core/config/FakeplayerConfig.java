@@ -175,6 +175,8 @@ public class FakeplayerConfig extends PluginConfig {
     private Map<Feature, String> defaultFeatures;
 
     private List<Integer> customPing = List.of(0);
+    private Boolean customPingDynamic;
+    private Integer customPingDynamicTaskDelay;
 
     @Inject
     public FakeplayerConfig() {
@@ -249,6 +251,8 @@ public class FakeplayerConfig extends PluginConfig {
         }
 
         customPing = Arrays.stream(Objects.requireNonNull(file.getString("custom-ping")).split(",")).map(Integer::parseInt).toList();
+        customPingDynamic = file.getBoolean("custom-ping-dynamic");
+        customPingDynamicTaskDelay = file.getInt("custom-ping-dynamic-task-delay");
 
     }
 

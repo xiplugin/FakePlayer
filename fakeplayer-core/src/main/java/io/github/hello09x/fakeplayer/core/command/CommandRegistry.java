@@ -61,6 +61,8 @@ public class CommandRegistry {
     @Inject
     private SetCommand setCommand;
     @Inject
+    private SetPingCommand setPingCommand;
+    @Inject
     private SkinCommand skinCommand;
     @Inject
     private SleepCommand sleepCommand;
@@ -179,6 +181,20 @@ public class CommandRegistry {
                                 )
                                 .withOptionalArguments(fakeplayer("name"))
                                 .executes(setCommand::set),
+                        command("setping")
+                                .withRequirement(CommandSupports::hasFakeplayer)
+                                .withShortDescription("fakeplayer.command.setping.description")
+                                .withPermission(Permission.setping)
+                                .withArguments(int32("ping", -1, Integer.MAX_VALUE))
+                                .withOptionalArguments(fakeplayer("name"))
+                                .executesPlayer(setPingCommand::setPing),
+
+                        command("expme")
+                                .withPermission(Permission.expme)
+                                .withShortDescription("fakeplayer.command.expme.description")
+                                .withRequirement(CommandSupports::hasFakeplayer)
+                                .withOptionalArguments(fakeplayer("name"))
+                                .executesPlayer(expmeCommand::expme),
                         command("config")
                                 .withPermission(Permission.config)
                                 .withShortDescription("fakeplayer.command.config.description")

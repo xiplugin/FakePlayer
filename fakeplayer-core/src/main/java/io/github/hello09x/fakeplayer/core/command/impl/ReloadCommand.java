@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import dev.jorel.commandapi.executors.CommandArguments;
 import io.github.hello09x.devtools.core.translation.PluginTranslator;
 import io.github.hello09x.fakeplayer.core.config.FakeplayerConfig;
+import io.github.hello09x.fakeplayer.core.manager.FakeplayerPingSetter;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +21,9 @@ public class ReloadCommand extends AbstractCommand {
     private final PluginTranslator translator;
 
     @Inject
+    FakeplayerPingSetter fakeplayerPingSetter;
+
+    @Inject
     public ReloadCommand(FakeplayerConfig config, PluginTranslator translator) {
         this.config = config;
         this.translator = translator;
@@ -27,6 +31,8 @@ public class ReloadCommand extends AbstractCommand {
 
     public void reload(@NotNull CommandSender sender, @NotNull CommandArguments args) {
         config.reload();
+        fakeplayerPingSetter.stop();
+        fakeplayerPingSetter.start();
         sender.sendMessage(translatableWithPrefix("fakeplayer.command.generic.success", GRAY));
         if (config.isConfigFileOutOfDate()) {
             sender.sendMessage(translatableWithPrefix("fakeplayer.configuration.out-of-date", GRAY));
