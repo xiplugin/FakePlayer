@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/xiplugin/FakePlayer/compare/v1.3.0...v1.4.0) (2026-06-13)
+
+
+### Features
+
+* dynamic fakeplayer custom ping ([ec8d1b8](https://github.com/xiplugin/FakePlayer/commit/ec8d1b858fbd92fd77e507f7159e941875ed7980))
+
 ## [1.3.0](https://github.com/xiplugin/FakePlayer/compare/v1.2.0...v1.3.0) (2026-06-05)
 
 
